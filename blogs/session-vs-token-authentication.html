@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session vs Token Authentication - Abdelrahman Awad</title>
+    <link rel="stylesheet" href="../css/bootstrap4-neon-glow.min.css">
+    <link rel="stylesheet" href="../css/custom.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .blog-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .blog-content h1 {
+            margin-bottom: 30px;
+        }
+        .blog-content h2 {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            color: #5299D3;
+        }
+        .blog-content p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        .blog-content ul {
+            margin-bottom: 20px;
+        }
+        .blog-content li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .blog-content pre {
+            background-color: #1a1a2e;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .blog-content code {
+            color: #BEB8EB;
+        }
+        .blog-sources {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .back-link {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5 pt-5">
+        <div class="back-link">
+            <a href="../index.html#blogs" class="text-primary"><i class="fas fa-arrow-left mr-2"></i>Back to Portfolio</a>
+        </div>
+
+        <div class="blog-content">
+            <h1 class="display-4 text-center">Token vs Session Authentication</h1>
+
+            <p>Authentication is the process of verifying if a user is who they are claiming to be. The most common way to verify a user is by using a password only the user would know, or by additionally having a third party verify their identity, also known as 2-factor authentication. So, when the user initially sends their username and password to the server, essentially 2 things happen: the server will receive their request and verify their identity based on if the username and password match its records, and if they do, the server establishes an authenticated session or issues a token. Only then will the client (or application) store some form of proof of authentication, in the form of a cookie or token, so that in subsequent requests it can be sent to the server rather than prompt the user to keep sending their credentials.</p>
+
+            <p>What we want to discuss, are the different ways the backend server handles checking the authentication, the types and their trade-offs in terms of security and performance</p>
+
+            <h2>Stateless vs Stateful Authentication</h2>
+
+            <p>These 2 methods are Stateful and Stateless</p>
+
+            <p>Stateful authentication simply means that once you've logged in the server keeps track of a the current authentication status and keeps track of the users that are currently logged in until log out. The users' statuses are usually stored server-side (often in a shared store such as Redis or a database), so when a user makes a request from his browser, the cookie including his authentication details is stored client-side and will be sent alongside it. The server will then check the database to see if the user is A. logged in (active) or logged out (inactive), and B. and if the sent data matches that of the active session details Alternatively, the application can handle the authentication in a stateless way, meaning the server doesn't track the user's state. The data being sent by the user alone to verify their identity is enough for the server to validate them.</p>
+
+            <p>These approaches have their trade-offs but in general …</p>
+            <ul>
+                <li>Stateful = easier revocation and control</li>
+                <li>Stateless = harder revocation, simpler distribution</li>
+            </ul>
+
+            <p>So, now that we know what the 2 types of authentications are, lets delve into the tools and protocols that an application uses to complete the process of authentication.</p>
+
+            <h2>Authentication Methods</h2>
+
+            <p>There are many concrete protocols and techniques wildly used globally to authenticate users like:</p>
+            <ul>
+                <li>Biometric: authenticating a user using their fingertips using a scanner</li>
+                <li>Single Sign On: a username and password that gives the user access to multiple application or services</li>
+                <li>2 Factor/ Multifactor: like we mentioned earlier, using a third-party device and or service ei: email, sms, windows authenticator, etc.</li>
+                <li>Certificates: a collection of cryptographic keys and info about the identity of the holder provided by a authority over a network</li>
+            </ul>
+
+            <p>But the ones we are going to be focusing on are:</p>
+            <ul>
+                <li>Session</li>
+                <li>And Token</li>
+            </ul>
+
+            <h2>Session Authentication</h2>
+
+            <p>A session is a server-side record representing a user's authenticated state. This record exists until the user's authentication expires whether by logging out, or set expiration rules session authentication is where once a user logs in, the server stores information about the user's authentication identity on a db, making it stateful. This data is then returned to the user in the form of a cookie and in subsequent requests the generated cookie is sent alongside them.</p>
+
+            <p>So, let's say for example, a user with a private twitter wants to see their posts, they enter their credentials and login, once the server verifies the credentials, it will generate a session record and store it server-side which may look like this:</p>
+
+<pre><code>{
+  "session_id": "7f9c2e4a9b...",
+  "user_id": 12345,
+  "username": "alice",
+  "authenticated": true,
+  "roles": ["USER"],
+  "created_at": "2026-01-07T10:12:00Z"
+}</code></pre>
+
+            <p>The important value to note here is session_id, which will now be sent back to the client as a cookie. Cookie:</p>
+
+            <pre><code>Set-Cookie: session_id=7f9c2e4a9b...;</code></pre>
+
+            <p>The user now has their authentication information stored in a cookie. When the user opens their account to see their posts, a request is sent to the server containing that cookie. Cookie sent alongside request:</p>
+
+<pre><code>GET /my/private-posts
+Cookie: session_id=7f9c2e4a9b...</code></pre>
+
+            <p>The server logic will see that the data is private and can only be accessed by a specific user (which it tracks using user_id). It will see if the session id sent by the client:</p>
+            <ul>
+                <li>A. matches that of an existing record</li>
+                <li>B. the session id's match that of the user that is allowed to see the private posts.</li>
+            </ul>
+
+            <p>Finally, the server responds with the requested resources.</p>
+
+            <p><strong>Advantages:</strong></p>
+            <ul>
+                <li>Easier to use in web-based application since cookies are supported on the browser</li>
+                <li>Session cookies are naturally small, making it efficient for storage on client-side</li>
+            </ul>
+
+            <p><strong>Limitations:</strong></p>
+            <ul>
+                <li>Harder to scale since the cookies are stored in a database server-side</li>
+                <li>Multiple Domains become problematic since cookies typically work on a single domain</li>
+                <li>Security risk: cookies are susceptible to Cross-Site Request Forgery</li>
+            </ul>
+
+            <h2>Token Authentication</h2>
+
+            <p>Tokens (such as JWTs) are cryptographically signed data that is stored by the user and sent alongside requests so servers can verify their authenticity A good analogy is to think of tokens as a ticket to a movie resource. Your ticket gains you access to your movie and no other, so when the cashier hands you the ticket and you hand it to the theatre guy, he doesn't have to authenticate that you are the buyer – he just validates your ticket.</p>
+
+            <p>In other words, when a user logs in using their credentials, the server will verify the credentials are returned a signed token. The client receives this token and stores it locally on the client side. The token is then placed in the "authorization header" of subsequent requests and all the server does is verify if the token is valid.</p>
+
+            <p>Typical web api token authentication request headers:</p>
+
+<pre><code>> GET /api_path HTTP/1.1
+> Host: yourdomain.com
+> Authorization: Bearer &lt;AUTHGEAR_ACCESS_TOKEN&gt;</code></pre>
+
+            <p>Finally, if the user logs out of the application and the client deletes the token from local storage.</p>
+
+            <p><strong>Advantages:</strong></p>
+            <ul>
+                <li>Mobile devices are far easier to implement</li>
+                <li>Avoiding database lookups for sessions is faster and easier to scale</li>
+                <li>Supports multiple complex infrastructures with multiple domains</li>
+                <li>CSRF risks are reduced when JWTs are sent via Authorization headers rather than cookies.</li>
+            </ul>
+
+            <p><strong>Limitations:</strong></p>
+            <ul>
+                <li>JWT are significantly larger than cookies since they store a lot more information</li>
+                <li>If a token is hijacked by hackers, the server has a harder time invalidating them</li>
+            </ul>
+
+            <h2>When to implement Session vs Token</h2>
+
+            <p>There are practical decision rules engineers follow when deciding whether their service should handle authentication via session-based auth or token-based auth, session-based authentication is recommended when …</p>
+            <ul>
+                <li>The application is a browser-first applications, which are traditional webapps that could server-rendered pages</li>
+                <li>You want to have the ability to admin-force logouts or instantly revoke sessions and kill access to comprised accounts for example</li>
+                <li>The application has high risk data access, and you wish to control the sessions and, for instance, allow only 1 active session</li>
+            </ul>
+
+            <p>On the other hand, token-based authentication is recommended when …</p>
+            <ul>
+                <li>You wish to scale to Mobile applications, since session cookies aren't native, tokens can be implemented more seamlessly</li>
+                <li>The application is distributed in a Microservice where trust must cross domains or organizations.</li>
+                <li>Implementing single sign-on and wanting to give a single user identity access to multiple organizations or independent systems</li>
+            </ul>
+
+            <div class="blog-sources">
+                <h2>Sources</h2>
+                <ul>
+                    <li><a href="https://www.youtube.com/watch?v=VrWU8hNqn3c&t=10s" target="_blank">https://www.youtube.com/watch?v=VrWU8hNqn3c&t=10s</a></li>
+                    <li><a href="https://www.authgear.com/post/session-vs-token-authentication" target="_blank">https://www.authgear.com/post/session-vs-token-authentication</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-5 mb-4">
+        <div class="container">
+            <p class="text-muted">© 2026 Abdelrahman Awad</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
+
