@@ -1,209 +1,152 @@
-/* Color Scheme v2 */
-
-:root {
-  --bg-main: #777C6D;
-  --bg-surface: #B7B89F;
-  --bg-card: #CBCBCB;
-  --bg-soft: #EEEEEE;
-
-  --text-main: #1f1f1f;
-  --text-muted: #4a4a4a;
-  --border-soft: rgba(0, 0, 0, 0.15);
-}
-
-/* Base styles */
 html {
-  background-color: var(--bg-main);
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(136, 136, 136, 0.5) var(--bg-surface);  
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(136, 136, 136, 50%) #2d3049;
 }
 
-body {
-  color: var(--text-main);
+/* Custom Scrollbar Styles for WebKit Browsers
+::-webkit-scrollbar {
+  width: 12px;
 }
 
-/* Navbar */
-.navbar,
-.navbar-dark {
-  background-color: var(--bg-surface) !important;
-  box-shadow: 0 2px 6px var(--border-soft);
+::-webkit-scrollbar-track {
+  background: #2d3049;
+  border-radius: 10px;
 }
 
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  padding: 0 30px;
-  box-shadow: 0 2px 2px -2px var(--border-soft);
+::-webkit-scrollbar-thumb {
+  background: rgb(136, 136, 136, 50%);
+  border-radius: 10px;
 }
 
-.navbar-gif {
-  height: 80px;
-  padding-right: 20px;
-  margin-right: auto;
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
-
-.navbar-right-content {
-  display: flex;
-  margin: 10px;
-  align-items: center;
-}
-
-/* Sections */
-#experience,
-#projects,
-#blogs {
-  background-color: var(--bg-surface);
-  border-radius: 14px;
-  padding: 3rem 2rem;
-  margin-top: 4rem;
-}
-
-/* Cards / Tab Panes / List items */
-.exp,
-.tab-pane,
-.list-group-item {
-  background-color: var(--bg-card);
-  border-radius: 12px;
-  padding: 1.5rem;
-}
-
-.list-group-item {
-  border: none;
-}
-
-/* Buttons */
-.btn-outline-primary {
-  color: var(--text-main);
-  border-color: var(--text-main);
-}
-
-.btn-outline-primary:hover {
-  background-color: var(--bg-soft);
-  color: var(--text-main);
-}
-
-/* Text colors */
-.text-primary {
-  color: var(--text-main) !important;
-}
-
-.text-secondary {
-  color: var(--text-muted) !important;
-}
-
-.text-muted,
-.text-grey {
-  color: var(--text-muted) !important;
-}
-
-/* Hover effects */
-.nav-link:hover,
-.dropdown-item:hover {
-  background-color: var(--bg-soft);
-}
+*/
 
 /* Loading Screen */
 #loading-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: var(--bg-main);
-  z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0B5563;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
+/* Spinner */
 .spinner {
-  border: 8px solid rgba(255, 255, 255, 0.1);
-  border-top: 8px solid var(--bg-soft);
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  animation: spin 2s linear infinite;
-  margin-bottom: 20px;
+    border: 8px solid rgba(255, 255, 255, 0.1);
+    border-top: 8px solid #fff;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 2s linear infinite;
+    margin-bottom: 20px;
 }
 
+/* Spinner Animation */
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
+/* Lock Icon */
 .lock {
-  font-size: 50px;
-  color: var(--bg-soft);
-  transition: transform 1.5s ease, opacity 1.5s ease;
+    font-size: 50px;
+    color: #fff;
+    transition: transform 1.5s ease, opacity 1.5s ease;
 }
 
 /* Hide main content initially */
 body > :not(#loading-screen) {
-  padding-top: 100px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 1s ease, visibility 1s ease;
+    padding-top: 100px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease, visibility 1s ease;
 }
 
-/* Experience Header */
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #0B5563;
+    padding: 0 30px;
+    box-shadow: 0 2px 2px -2px rgb(128, 128, 128, 20%);
+}
+
+.navbar-gif {
+    height: 80px;
+    padding-right: 20px;
+    margin-right: auto;
+}
+
+.navbar-right-content {
+    display: flex;
+    margin: 10px;
+    align-items: center;
+}
+
 .exp .text-grey {
-  padding-left: 20px;
+    padding-left: 20px;
 }
 
+/* Experience Header Styling */
 .exp-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-  margin-bottom: 15px;
-  border-bottom: 1px solid rgba(0,0,0,0.1);
-  padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
 }
 
 .exp-header h4 {
-  font-size: 1.4rem;
-  font-weight: 600;
+    font-size: 1.4rem;
+    font-weight: 600;
 }
 
 .exp-header small {
-  font-size: 0.85rem;
-  opacity: 0.7;
+    font-size: 0.85rem;
+    opacity: 0.7;
 }
 
 .exp-header small i {
-  margin-right: 5px;
+    margin-right: 5px;
 }
 
-/* Tabs */
 .nav-pills {
-  margin-bottom: auto;
+    margin-bottom: auto;
 }
 
 .tab-content .tab-pane {
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.12s ease-in-out, visibility 0.12s ease-in-out;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.12s ease-in-out, visibility 0.12s ease-in-out;
 }
 
 .tab-content .tab-pane.show.active {
-  opacity: 1;
-  visibility: visible;
-  transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
 }
 
-/* Badges */
 .htbuserbadge {
-  padding: 0px;
-  width: 220px;
-  margin: auto;
+    padding: 0px;
+    width: 220px;
+    margin: auto;
 }
 
 .thmuserbadge {
-  width: 275px;
-  margin: auto;
+    width: 275px;
+    margin: auto;
 }
