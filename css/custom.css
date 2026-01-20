@@ -150,3 +150,7 @@ body > :not(#loading-screen) {
     width: 275px;
     margin: auto;
 }
+
+html, body {
+  background-color: #1a202c !important; /* Ensure it overrides Bootstrap */
+}
