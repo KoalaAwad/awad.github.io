@@ -1,17 +1,17 @@
 
 :root {
-    --bg-main: #f0f0f3;
-    --bg-surface: #e8e8ec;
+    --bg-main: #d4d4d8;
+    --bg-surface: #c4c4c9;
     --bg-navbar: #0f1226;
 
     --text-main: #000000;
-    --text-muted: #6b6f8a;
+    --text-muted: #52525b;
     --text-invert: #ffffff;
 
     --accent: #4f46e5;        /* Indigo */
     --accent-soft: #e0e7ff;
 
-    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-subtle: rgba(0, 0, 0, 0.12);
 }
 
 /* Body & Page Background */
