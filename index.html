@@ -53,9 +53,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a href="#" class="p-3 text-decoration-none text-white">About Me</a>
-            <a href="#experience" class="p-3 text-decoration-none text-white">Experience</a>
-            <a href="#projects" class="p-3 text-decoration-none text-white">Projects</a>
+            <a href="#" class="p-3 text-decoration-none text-white d-none d-lg-block">About Me</a>
+            <a href="#experience" class="p-3 text-decoration-none text-white d-none d-lg-block">Experience</a>
+            <a href="#projects" class="p-3 text-decoration-none text-white d-none d-lg-block">Projects</a>
             <div class="ht-tm-element btn-group">
               <button type="button" class="btn btn-outline-info btn-shadow dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 Contact Me
@@ -273,14 +273,13 @@
 
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    // Initialize AOS immediately but with proper settings
-    AOS.init({
+      AOS.init({
       once: false,
       offset: 0,
       duration: 800,
       easing: 'ease-out-cubic',
       delay: 0,
-      disable: false,
+      disable: window.innerWidth < 768,
       mirror: false
     });
 
@@ -322,7 +321,7 @@
                 duration: 800,
                 easing: 'ease-out-cubic',
                 delay: 0,
-                disable: false,
+                disable: window.innerWidth < 768,
                 mirror: false,
                 startEvent: 'load'
               });
